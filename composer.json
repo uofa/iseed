@@ -21,10 +21,10 @@
     },
     "autoload": {
         "psr-0": {
-            "Uofa\\Iseed": "src/"
+            "Orangehill\\Iseed": "src/"
         },
         "classmap": [
-            "src/Uofa/Iseed/Exceptions.php"
+            "src/Orangehill/Iseed/Exceptions.php"
         ]
     },
     "minimum-stability": "dev"
