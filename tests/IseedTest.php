@@ -1,30 +1,45 @@
 <?php
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
 use Mockery as m;
+use PHPUnit\Framework\TestCase;
 
-class IseedTest extends PHPUnit_Framework_TestCase {
+class IseedTest extends TestCase
+{
+    /**
+     * Stub template directory.
+     *
+     * @var string
+     */
+    public static $stubsDir;
 
-    protected static $stubsDir, $testStubsDir;
+    /**
+     * Test stub template directory.
+     *
+     * @var string
+     */
+    public static $testStubsDir;
 
-    public function __construct()
+    public static function setUpBeforeClass()
     {
-        static::$stubsDir = __DIR__.'/../src/Orangehill/Iseed/Stubs';
-        static::$testStubsDir = __DIR__.'/Stubs';
+        static::$stubsDir = __DIR__ . '/../src/Orangehill/Iseed/Stubs';
+        static::$testStubsDir = __DIR__ . '/Stubs';
     }
 
     public function tearDown()
     {
         m::close();
     }
-    
+
     public function testPopulatesStub()
     {
         $productionStub = file_get_contents(static::$stubsDir . '/seed.stub');
         $testStubs = array(
             'blank'       => array(
                 'content' => file_get_contents(static::$testStubsDir . '/seed_blank.stub'),
-                'data'    => array()
+                'data'    => []
             ),
             'entries_5'   => array(
                 'content' => file_get_contents(static::$testStubsDir . '/seed_5.stub'),
@@ -2076,8 +2091,10 @@ class IseedTest extends PHPUnit_Framework_TestCase {
                     )
         )));
         $iSeed = new Orangehill\Iseed\Iseed();
-        foreach ($testStubs as $key=>$stub){
+        foreach ($testStubs as $key => $stub) {
             $output = $iSeed->populateStub('test_class', $productionStub, 'test_table', $stub['data'], 500);
+            // if you need to check line endings...
+            //var_dump(preg_split('/\r\n|\r|\n/', $output));
             $this->assertEquals($stub['content'], $output, "Stub {$key} is not what's it's expected to be.");
         }
     }
@@ -2090,15 +2107,15 @@ class IseedTest extends PHPUnit_Framework_TestCase {
     {
         $hasTable = m::mock('Orangehill\Iseed\Iseed[hasTable]')->makePartial();
         $hasTable->shouldReceive('hasTable')->once()->andReturn(false);
-        $hasTable->generateSeed('nonexisting','database', 'numOfRows');
+        $hasTable->generateSeed('nonexisting', 'database', 'numOfRows');
     }
 
     public function testRepacksSeedData()
     {
-        $data = array(
-            array('id' => '1', 'name' => 'one'),
-            array('id' => '2', 'name' => 'two')
-        );
+        $data = [
+            ['id' => '1', 'name' => 'one'],
+            ['id' => '2', 'name' => 'two'],
+        ];
         $iseed = new Orangehill\Iseed\Iseed();
         $output = $iseed->repackSeedData($data);
         $this->assertEquals(json_encode($data), json_encode($output));
@@ -2115,7 +2132,7 @@ class IseedTest extends PHPUnit_Framework_TestCase {
     {
         $iseed = new Orangehill\Iseed\Iseed();
         $output = $iseed->getStubPath();
-        $expected = substr(__DIR__, 0, -5) . 'src/Orangehill/Iseed/Stubs';
+        $expected = substr(__DIR__, 0, -5) . 'src\Orangehill\Iseed\Stubs';
         $this->assertEquals($expected, $output);
     }
 
@@ -2124,13 +2141,13 @@ class IseedTest extends PHPUnit_Framework_TestCase {
         $file = m::mock('Illuminate\Filesystem\Filesystem')->makePartial();
         $file->shouldReceive('get')
              ->once()
-             ->with(substr(__DIR__, 0, -5) . 'src/Orangehill/Iseed/Stubs/seed.stub');
+             ->with(substr(__DIR__, 0, -5) . 'src\Orangehill\Iseed\Stubs\seed.stub');
         $file->shouldReceive('put')
              ->once()
              ->with('seedPath', 'populatedStub');
-        $mocked = m::mock('Orangehill\Iseed\Iseed', array($file))->makePartial();
+        $mocked = m::mock('Orangehill\Iseed\Iseed', [$file])->makePartial();
         $mocked->shouldReceive('hasTable')->once()->andReturn(true);
-        $mocked->shouldReceive('getData')->once()->andReturn(array());
+        $mocked->shouldReceive('getData')->once()->andReturn([]);
         $mocked->shouldReceive('generateClassName')->once()->andReturn('ClassName');
         $mocked->shouldReceive('getSeedPath')->once()->andReturn('seedPath');
         $mocked->shouldReceive('getPath')->once()->with('ClassName', 'seedPath')->andReturn('seedPath');
@@ -2138,5 +2155,4 @@ class IseedTest extends PHPUnit_Framework_TestCase {
         $mocked->shouldReceive('updateDatabaseSeederRunMethod')->once()->with('ClassName')->andReturn(true);
         $mocked->generateSeed('tablename', 'database', 'numOfRows');
     }
-
 }

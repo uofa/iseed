@@ -45,7 +45,7 @@ class Iseed
         $className = $this->generateClassName($table);
 
         // Get template for a seed file contents
-        $stub = $this->files->get($this->getStubPath() . '/seed.stub');
+        $stub = $this->files->get($this->getStubPath() . '\seed.stub');
 
         // Get a seed folder path
         $seedPath = $this->getSeedPath();
@@ -144,7 +144,7 @@ class Iseed
      */
     public function getStubPath()
     {
-        return __DIR__ . '/Stubs';
+        return __DIR__ . '\Stubs';
     }
 
     /**
@@ -158,12 +158,14 @@ class Iseed
      */
     public function populateStub($class, $stub, $table, $data, $chunkSize = null)
     {
-        $chunkSize = $chunkSize ?: \Config::get('iseed::chunk_size');
+        $chunkSize = ($chunkSize) ?: \Config::get('iseed::chunk_size');
 
         $inserts = '';
         $chunks = array_chunk($data, $chunkSize);
-        foreach ($chunks as $chunk) {
-            $inserts .= sprintf("\n        \DB::table('%s')->insert(%s);", $table, $this->prettifyArray($chunk));
+        if (!empty($data)) {
+            foreach ($chunks as $chunk) {
+                $inserts .= sprintf("\n        \DB::table('%s')->insert(%s);", $table, $this->prettifyArray($chunk));
+            }
         }
 
         $stub = str_replace('{{class}}', $class, $stub);
