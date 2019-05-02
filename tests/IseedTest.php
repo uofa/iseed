@@ -2152,7 +2152,7 @@ class IseedTest extends TestCase
         $mocked->shouldReceive('getSeedPath')->once()->andReturn('seedPath');
         $mocked->shouldReceive('getPath')->once()->with('ClassName', 'seedPath')->andReturn('seedPath');
         $mocked->shouldReceive('populateStub')->once()->andReturn('populatedStub');
-        $mocked->shouldReceive('updateDatabaseSeederRunMethod')->once()->with('ClassName')->andReturn(true);
+        //$mocked->shouldReceive('updateDatabaseSeederRunMethod')->once()->with('ClassName')->andReturn(true);
         $mocked->generateSeed('tablename', 'database', 'numOfRows');
     }
 }

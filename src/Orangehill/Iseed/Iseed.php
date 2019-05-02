@@ -22,7 +22,7 @@ class Iseed
      * @return boolean
      * @throws TableNotFoundException
      */
-    public function generateSeed($table, $database = null, $max = 0)
+    public function generateSeed($table, $database = null, $max = 0, $updateDbSeeder = false)
     {
         if (!$database) {
             $database = \Config::get('database.default');
@@ -60,7 +60,11 @@ class Iseed
         $this->files->put($seedsPath, $seedContent);
 
         // Update the DatabaseSeeder.php file
-        return $this->updateDatabaseSeederRunMethod($className) !== false;
+        if ($updateDbSeeder) {
+            return $this->updateDatabaseSeederRunMethod($className) !== false;
+        }
+
+        return true;
     }
 
     /**
