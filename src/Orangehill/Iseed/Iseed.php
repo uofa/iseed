@@ -45,7 +45,7 @@ class Iseed
         $className = $this->generateClassName($table);
 
         // Get template for a seed file contents
-        $stub = $this->files->get($this->getStubPath() . '\seed.stub');
+        $stub = $this->files->get($this->getStubPath() . '/seed.stub');
 
         // Get a seed folder path
         $seedPath = $this->getSeedPath();
@@ -148,7 +148,7 @@ class Iseed
      */
     public function getStubPath()
     {
-        return __DIR__ . '\Stubs';
+        return __DIR__ . '/Stubs';
     }
 
     /**
