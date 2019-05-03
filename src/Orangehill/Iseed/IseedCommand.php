@@ -81,7 +81,7 @@ class IseedCommand extends Command
     {
         return [
             ['tables', InputArgument::REQUIRED, 'comma separated string of table names'],
-        );
+        ];
     }
 
     /**
